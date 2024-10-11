@@ -5,12 +5,24 @@ import { containerDiv } from "./InteriorDesignStyles";
 
 const InteriorDesign: React.FC = () => {
     const [generatedImages, setGeneratedImages] = useState<boolean>(false);
+    const [isImgLoaded, setIsImgLoaded] = useState<boolean>(false);
+    const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+    const setLoadedImage = (): void => {
+        setIsImgLoaded(true);
+    }
     const generateImages = (): void => {
-        setGeneratedImages(true);
+
+        if (isImgLoaded)
+        {
+            setGeneratedImages(true);
+            return;
+        }
+        setErrorMsg("A file must be selected!");
     }
     return (
         <div className={containerDiv}>
-            <ImageLoad generateImages={generateImages}></ImageLoad>
+            <ImageLoad errorMessage={errorMsg} generateImages={generateImages} setLoadedImage={setLoadedImage} ></ImageLoad>
             <GeneratedImages generateImages={generatedImages}></GeneratedImages>
         </div>
     );

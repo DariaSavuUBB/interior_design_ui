@@ -1,11 +1,19 @@
 import { useEffect, useState } from "react";
 import { imageContainerClassName, loadImageClassName } from "./ImageLoadStyles";
-import { Button } from "@fluentui/react-components";
+import { Button, Image } from "@fluentui/react-components";
 import { ImageLoadProps } from "./ImageLoadProps";
 
 const ImageLoad = (props: ImageLoadProps): JSX.Element => {
     const [uploadedImage, setUploadedImage] = useState<string | null>(null);
     const [imageError, setImageError] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (props.errorMessage) {
+            setImageError(props.errorMessage);
+            return;
+        }
+        setImageError(null);
+    }, [props.errorMessage]);
 
     const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file: File | undefined = event.target.files?.[0];
@@ -16,7 +24,7 @@ const ImageLoad = (props: ImageLoadProps): JSX.Element => {
                 setImageError('Please select a valid image (JPEG, PNG).');
                 return;
             }
-
+            props.setLoadedImage();
             setUploadedImage(URL.createObjectURL(file));
             setImageError(null);
         }
@@ -26,7 +34,7 @@ const ImageLoad = (props: ImageLoadProps): JSX.Element => {
             <h3>Load your idea</h3>
             <input type="file" accept="image/*" onChange={handleImageChange} />
             {imageError && <div>{imageError}</div>}
-            {uploadedImage && <img src={uploadedImage} className={imageContainerClassName}></img>}
+            {uploadedImage && <Image src={uploadedImage} className={imageContainerClassName}></Image>}
             <Button onClick={props.generateImages}>Generate Images</Button>
         </div>
     );
